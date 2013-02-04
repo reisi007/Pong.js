@@ -1,7 +1,7 @@
 void setup()
 {
   // Get resulution and constants
-  displayW = displayWidth /2;
+  displayW = displayWidth/2;
   displayH = displayHeight/2;
   size(displayW,displayH);
   set__playground();
@@ -109,12 +109,12 @@ float get_speed()
   if(displayH < displayW)
   {
     speed = random(displayH,displayW);
-    speed /= displayH;
+    speed /= (2*displayH/3);
   }
   else
   {
     speed  = random (displayW,displayH);
-    speed/= displayW;
+    speed/= (2*displayW/3);
   }
   speed -= 1*speed/3;
   if(be_exited < 0)
@@ -154,7 +154,8 @@ void reflect_ball()
          speed_x *= -1;
         // ball_x--;
          ball = rr;
-         speed_x*=1.2;
+         speed_y += drall(true);
+         speed_x-=sqrt(displayH)/20;
        }
        else
        {
@@ -171,7 +172,8 @@ void reflect_ball()
          speed_x *= -1;
        //  ball_x++;
          ball = rl;
-         speed_x*=1.2;
+         speed_y += drall(false);
+         speed_x+=sqrt(displayH)/20;
        }
        else
        {
@@ -254,4 +256,15 @@ void draw_playground()
   rectMode(CORNER);
   rect(0,0,2*line_w,displayH);
   rect((displayW- 2*line_w),0,2*line_w,displayH);
+}
+float temp;
+float drall(boolean rr)
+{
+  
+  if(rr)
+    temp = 2*sin(PI / (2*(rec_w/2)) *(rr_y- ball_y));
+  else
+    temp = 2*sin(PI / (2*(rec_w/2)) *(rl_y- ball_y));
+    
+    return temp;
 }
