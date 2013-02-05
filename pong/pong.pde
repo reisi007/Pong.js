@@ -1,10 +1,11 @@
 void setup()
 {
   // Get resulution and constants
-  displayW = displayWidth/2;
-  displayH = displayHeight/2;
+  displayW = displayWidth;
+  displayH = displayHeight;
   size(displayW,displayH);
   set__playground();
+  setup_font();
   smooth();
   displayH_5 = displayH *0.05;
   displayW_5 = displayW * 0.05;
@@ -12,6 +13,8 @@ void setup()
   rec_h = 2*displayH /7;
   max_r = displayW - rec_w;
   max_l =rec_w;
+  max_t = line_w*2;
+  max_b = displayH - max_t;
   rec_speed = displayH/130;
   rec_corner_rad = rec_w/3;
   //Define colours
@@ -32,13 +35,16 @@ void setup()
   speed_y = get_speed();
   // Set values for checking rectangle
   rec_h_2 = rec_h/2;
-  rec_m_t = rec_h_2;
-  rec_m_b = displayH-rec_h_2;
+  rec_m_t = rec_h_2+max_t;
+  rec_m_b = displayH-rec_m_t;
   cursor(CROSS);
+  // Score init
+  score_red =0;
+  score_blue =0;
 }
-float ball_x,ball_y,displayH_5,displayW_5,max_r,max_l,rec_w, rec_h,speed_x,speed_y,rec_speed,mouse_up,mouse_down,rec_h_2,rec_m_t,rec_m_b,rec_corner_rad;
+float ball_x,ball_y,displayH_5,displayW_5,max_r,max_l,max_t,max_b,rec_w, rec_h,speed_x,speed_y,rec_speed,mouse_up,mouse_down,rec_h_2,rec_m_t,rec_m_b,rec_corner_rad;
 int ball_d, rr_y, rl_y,displayH,displayW;
-int ball_t,ball_r,ball_l,ball_b;
+int ball_t,ball_r,ball_l,ball_b,score_red,score_blue;
 color bg,ball,rr,rl;
 boolean game_lost = false;
 void draw()
@@ -55,7 +61,7 @@ void draw()
   move_ball();
   draw_ball();
   reflect_ball();
-  if(/*gamelosttest()|*/ game_lost)
+  if(game_lost)
   {
     ball_x = displayW/2;
     ball_y = displayH/2;
@@ -78,12 +84,12 @@ void draw_rec(boolean right)
  if(right)
  {
    fill(rr);
-   rect(displayW-rec_w/2,rr_y,rec_w,rec_h,rec_corner_rad);
+   rect(displayW-rec_w,rr_y,rec_w,rec_h,rec_corner_rad);
  }
  else
  {
    fill(rl);
-   rect(rec_w/2,rl_y,rec_w,rec_h,rec_corner_rad);
+   rect(rec_w,rl_y,rec_w,rec_h,rec_corner_rad);
  }
 }
 
@@ -133,13 +139,13 @@ void reflect_ball()
      ball_r = (int)(ball_x + ball_d/2);
      ball_l = (int)(ball_x - ball_d/2);
      
-     if(ball_t <= 0)
+     if(ball_t <= max_t)
      {
        // Top border
        speed_y *= -1;
        ball_y++;
      }
-     if(ball_b >= displayH)
+     if(ball_b >= max_b)
      {
        // Bottom border
        speed_y *= -1;
@@ -161,6 +167,7 @@ void reflect_ball()
        {
          game_lost = true;
          ball = rl;
+         score_red++;
        }
      }
      if(ball_l <= max_l)
@@ -179,6 +186,7 @@ void reflect_ball()
        {
          game_lost = true;
          ball = rr;
+         score_blue++;
        }
      }
   
@@ -246,16 +254,18 @@ void draw_playground()
   line(center_x,mouse_down,displayW,mouse_down);
   strokeWeight(line_w);
   stroke(255);
+  line(center_x,0,center_x,displayH);
   ellipse(center_x,center_y,mid_d,mid_d);
   fill(0,0);
-  line(center_x,0,center_x,ell_upY);
-  line(center_x,ell_downY,center_x,displayH);
   fill(255);
   noStroke();
   ellipse(center_x,center_y,ball_d,ball_d);
   rectMode(CORNER);
   rect(0,0,2*line_w,displayH);
   rect((displayW- 2*line_w),0,2*line_w,displayH);
+  rect(0,0,displayW,2*line_w);
+  rect(0,displayH-2*line_w,displayW,2*line_w);
+  draw_font();
 }
 float temp;
 float drall(boolean rr)
@@ -267,4 +277,23 @@ float drall(boolean rr)
     temp = 2*sin(PI / (2*(rec_w/2)) *(rl_y- ball_y));
     
     return temp;
+}
+
+PFont font;
+
+void setup_font()
+{
+  font = loadFont("lib_sans-48.vlw");
+  textFont(font,32);
+}
+
+void draw_font()
+{
+  textMode(CENTER);
+  fill(rl);
+  text(score_red,max_l+rec_w,displayH-32);
+  fill(rr);
+  text(score_blue,max_r-2*rec_w,displayH-32);
+  fill(255,155);
+  text((int)frameRate,max_l+rec_w,32);
 }
