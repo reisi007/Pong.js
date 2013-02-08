@@ -6,8 +6,17 @@ Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041
 void setup()
 {
   // Get resulution and constants
-  displayW = 2*(window.innerWidth)/3;
-  displayH = 3*(window.innerHeight)/4;
+  if(window.innerWidth > window.innerHeight)
+  {
+    displayW = (int)(2*window.innerWidth/3);
+    displayH =(int)( 9/16 * displayW);
+ 
+  }
+  else
+  {
+    displayH = 2*(window.innerHeight)/3;
+    displayW =(int)(16/9 *displayH);
+  }
   size(displayW,displayH);
   set__playground();
   setup_font();
@@ -107,9 +116,10 @@ void draw_ball()
 
 void move_ball()
 {
+     frames = frameRate;
   // Set ball_x and ball_y
-     ball_x += speed_x; 
-     ball_y += speed_y;
+     ball_x +=  speed_x* ( 60 / frames); 
+     ball_y += speed_y* ( 60 / frames);
   
 }
 
@@ -130,6 +140,7 @@ float get_speed()
   speed -= 1*speed/3;
   if(be_exited < 0)
     speed *= -1;
+    
     speed *=2;
   return speed;
     
@@ -285,7 +296,7 @@ float drall(boolean rr)
 }
 
 PFont font;
-
+int frames;
 void setup_font()
 {
   font = loadFont("lib_sans-48.vlw");
@@ -300,5 +311,5 @@ void draw_font()
   fill(rr);
   text(score_blue,max_r-2*rec_w,displayH-32);
   fill(255,155);
-  text((int)frameRate,max_l+rec_w,40 + line_w);
+  text(frames,max_l+rec_w,40 + line_w);
 }
