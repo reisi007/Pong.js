@@ -1,12 +1,15 @@
-/* @pjs globalKeyEvents=true; 
+/* 
 This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Austria License. To view 
 a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/at/ or send a letter to 
 Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+
+© Reisisoft [Florian Reisinger]
 */
 void setup()
 {
+  frameRate(60);
   // Get resulution and constants
-  if(window.innerWidth > window.innerHeight)
+  if(window.innerWidth >= window.innerHeight)
   {
     displayW = (int)(2*window.innerWidth/3);
     displayH =(int)( 9/16 * displayW);
@@ -14,11 +17,12 @@ void setup()
   }
   else
   {
-    displayH = 2*(window.innerHeight)/3;
+    displayH = 7*(window.innerHeight)/8;
     displayW =(int)(16/9 *displayH);
   }
   size(displayW,displayH);
   set__playground();
+  speed_const = displayW /400;
   setup_font();
   smooth();
   displayH_5 = displayH *0.05;
@@ -29,7 +33,7 @@ void setup()
   max_l =rec_w;
   max_t = line_w*2;
   max_b = displayH - max_t;
-  rec_speed = displayH/130;
+  rec_speed = displayH/100;
   rec_corner_rad = rec_w/3;
   //Define colours
   bg = color(0,128,0);
@@ -40,8 +44,8 @@ void setup()
   ball_x = displayW/2;
   ball_y = displayH/2;
   ball_d = (displayH + displayW)/40;
-  mouse_up = 2*displayH/5;
-  mouse_down = 3*displayH/5;
+  mouse_up = 6*displayH/10;
+  mouse_down = 4*displayH/10;
   // Set default y coordinate
   rr_y = displayH/2;
   rl_y = rr_y;
@@ -56,7 +60,7 @@ void setup()
   score_red =0;
   score_blue =0;
 }
-float ball_x,ball_y,displayH_5,displayW_5,max_r,max_l,max_t,max_b,rec_w, rec_h,speed_x,speed_y,rec_speed,mouse_up,mouse_down,rec_h_2,rec_m_t,rec_m_b,rec_corner_rad;
+float ball_x,ball_y,displayH_5,displayW_5,max_r,max_l,max_t,max_b,rec_w, rec_h,speed_x,speed_y,rec_speed,mouse_up,mouse_down,rec_h_2,rec_m_t,rec_m_b,rec_corner_rad,speed_const;
 int ball_d, rr_y, rl_y,displayH,displayW;
 int ball_t,ball_r,ball_l,ball_b,score_red,score_blue;
 color bg,ball,rr,rl;
@@ -68,20 +72,24 @@ void draw()
   *    Draw method
   *
   */
-  update_y_rec();
   reset_bg();
   draw_rec(true);
   draw_rec(false);
-  move_ball();
   draw_ball();
-  reflect_ball();
-  if(game_lost)
+  if(focused)
   {
-    ball_x = displayW/2;
-    ball_y = displayH/2;
-    speed_x = get_speed();
-    speed_y = get_speed();
-    game_lost = false;
+  update_y_rec();
+  reflect_ball();
+  move_ball();
+  
+    if(game_lost)
+    {
+      ball_x = displayW/2;
+      ball_y = displayH/2;
+      speed_x = get_speed();
+      speed_y = get_speed();
+      game_lost = false;
+    }
   }
 }
 void reset_bg()
@@ -118,8 +126,8 @@ void move_ball()
 {
      frames = frameRate;
   // Set ball_x and ball_y
-     ball_x +=  speed_x* ( 60 / frames); 
-     ball_y += speed_y* ( 60 / frames);
+     ball_x +=  (speed_x* ( 60 / frames) * speed_const); 
+     ball_y += (speed_y* ( 60 / frames) * speed_const);
   
 }
 
@@ -141,8 +149,7 @@ float get_speed()
   if(be_exited < 0)
     speed *= -1;
     
-    speed *=2;
-  return speed;
+  return speed*1.3;
     
 }
 void reflect_ball()
@@ -173,11 +180,10 @@ void reflect_ball()
        //Maybe rectangle on the right??
        if(((rr_y+rec_h/2)>= ball_y)&((rr_y -rec_h/2) <= ball_y))
        {
-         speed_x *= -1;
+         speed_x *= -1.005;
         // ball_x--;
          ball = rr;
-         speed_y += drall(true);
-         speed_x-=sqrt(displayH)/20;
+         speed_y += drall(true)/3;
        }
        else
        {
@@ -192,11 +198,10 @@ void reflect_ball()
        // Maybe rectangle on the left??
        if(((rl_y+rec_h/2) >= ball_y)&((rl_y -rec_h/2) <= ball_y))
        {
-         speed_x *= -1;
+          speed_x *= -1.005;
        //  ball_x++;
          ball = rl;
-         speed_y += drall(false);
-         speed_x+=sqrt(displayH)/20;
+         speed_y += drall(false)/3;
        }
        else
        {
@@ -311,5 +316,5 @@ void draw_font()
   fill(rr);
   text(score_blue,max_r-2*rec_w,displayH-32);
   fill(255,155);
-  text(frames,max_l+rec_w,40 + line_w);
+  text((int)frames,max_l+rec_w,40 + line_w);
 }
