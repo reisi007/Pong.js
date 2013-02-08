@@ -1,4 +1,4 @@
-/*
+/* @pjs globalKeyEvents=true; 
 This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Austria License. To view 
 a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/at/ or send a letter to 
 Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
@@ -6,8 +6,8 @@ Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041
 void setup()
 {
   // Get resulution and constants
-  displayW = displayWidth;
-  displayH = displayHeight;
+  displayW = 2*(window.innerWidth)/3;
+  displayH = 3*(window.innerHeight)/4;
   size(displayW,displayH);
   set__playground();
   setup_font();
