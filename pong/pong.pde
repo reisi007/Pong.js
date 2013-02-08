@@ -300,5 +300,5 @@ void draw_font()
   fill(rr);
   text(score_blue,max_r-2*rec_w,displayH-32);
   fill(255,155);
-  text((int)frameRate,max_l+rec_w,32);
+  text((int)frameRate,max_l+rec_w,40 + line_w);
 }
